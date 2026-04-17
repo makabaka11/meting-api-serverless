@@ -3,13 +3,10 @@ main = "src/index.js"
 compatibility_date = "2025-11-21"
 workers_dev = true
 compatibility_flags = ["nodejs_compat"]
-assets = { directory = ".", files = ["index.html"] }
 
 # QQ音乐定时cookie刷新
 [triggers]
 crons = ["* */4 * * *"]
-
-
 
 [observability]
 enabled = false
@@ -25,3 +22,11 @@ invocation_logs = true
 enabled = false
 persist = true
 head_sampling_rate = 1
+
+
+[assets]
+directory = "."
+binding = "ASSETS"
+
+[assets.run_worker_first]
+pattern = ["/api*"]
