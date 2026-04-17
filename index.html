@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>Meting API Serverless</title>
+  <title>Retr0 的音乐API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- APlayer -->
@@ -111,6 +111,82 @@
       border-radius: 6px;
       overflow-x: auto;
     }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .code-inline {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #eef2ff;
+      color: #1e40af;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .code-block {
+      position: relative;
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      color: inherit;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      margin-top: 0;
+      padding: 6px 10px;
+      font-size: 12px;
+      background: #1d4ed8;
+    }
+
+    .copy-btn:hover {
+      background: #1e3a8a;
+    }
   </style>
 
 </head>
@@ -118,31 +194,76 @@
 <body>
 
 <header>
-  <h1>Meting API Serverless</h1>
-  <p>基于 Cloudflare Workers 的音乐 API 服务</p>
+  <h1>欢迎访问Retr0的音乐API 👋</h1>
+  <p>这是一个音乐api接口，内置了网易云的VIP（因为我充了）<br>
+    不过只有通过www.retr0.xyz域名才能请求到VIP歌曲</p>
 </header>
 
 <main>
 
   <div class="card">
     <h2>📖 API 使用说明</h2>
-    <p>基础调用格式：</p>
-    <pre>/api?server=netease&type=song&id=191232</pre>
+    <p>基础路径: <span class="code-inline">https://meting.retr0.xyz/api</span></p>
+    <h3>请求参数</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>参数</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="code-inline">server</span></td>
+                <td>是</td>
+                <td>平台: <span class="code-inline">netease</span> (网易云) / <span class="code-inline">tencent</span> (QQ) / <span class="code-inline">kugou</span> (酷狗) / <span class="code-inline">baidu</span> (百度) / <span class="code-inline">kuwo</span> (酷我)</td>
+            </tr>
+            <tr>
+                <td><span class="code-inline">type</span></td>
+                <td>是</td>
+                <td>类型: <span class="code-inline">search</span> / <span class="code-inline">song</span> / <span class="code-inline">album</span> / <span class="code-inline">artist</span> / <span class="code-inline">playlist</span> / <span class="code-inline">lrc</span> / <span class="code-inline">url</span> / <span class="code-inline">pic</span></td>
+            </tr>
+            <tr>
+                <td><span class="code-inline">id</span></td>
+                <td>是</td>
+                <td>资源 ID (如歌曲 ID、歌单 ID)</td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>示例</h3>
+    <ul>
+        <li>获取网易云歌曲详情: <span class="code-inline">https://meting.retr0.xyz/api?server=netease&type=song&id=186016</span></li>
+    </ul>
 
-```
-<ul>
-  <li><b>server</b>：netease / tencent</li>
-  <li><b>type</b>：song / playlist / album</li>
-  <li><b>id</b>：资源 ID</li>
-</ul>
-```
+    <h3>前端接入 (MetingJS)</h3>
+    <p>如果你使用 <a href="https://github.com/metowolf/MetingJS">MetingJS</a>，只需设置 <span class="code-inline">meting_api</span> 即可:</p>
 
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">复制</button>
+      <pre><code>&lt;meting-js
+    server="netease"
+    type="playlist"
+    id="60198"
+    meting_api="https://meting.retr0.xyz/api?server=:server&amp;type=:type&amp;id=:id"&gt;
+  &lt;/meting-js&gt;</code></pre>
+    </div>
+
+    <script>
+        function copyCode(btn) {
+        const code = btn.parentElement.querySelector('code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = '已复制!';
+                setTimeout(() => btn.textContent = '复制', 2000);
+            });
+        }
+    </script>
+    
   </div>
 
   <div class="card">
     <h2>🎧 在线测试</h2>
 
-```
 <label>平台：</label>
 <select id="server">
   <option value="netease">网易云音乐</option>
@@ -168,14 +289,14 @@
 <div id="api-url" class="api-url"></div>
 
 <div id="player"></div>
-```
+
 
   </div>
 
 </main>
 
 <footer>
-  Powered by Cloudflare Workers
+  Powered by ctOS
 </footer>
 
 <!-- APlayer JS -->
