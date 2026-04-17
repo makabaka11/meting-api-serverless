@@ -3,6 +3,7 @@ main = "src/index.js"
 compatibility_date = "2025-11-21"
 workers_dev = true
 compatibility_flags = ["nodejs_compat"]
+assets = { directory = ".", files = ["index.html"] }
 
 # QQ音乐定时cookie刷新
 [triggers]
