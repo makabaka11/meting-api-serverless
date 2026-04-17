@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retr0的音乐API</title>
+    <!-- APlayer CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            font-size: 28px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 22px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .code-inline {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background-color: #fafafa;
+            font-weight: bold;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 15px 0;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* 新增：测试表单样式 */
+        .test-form {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #eee;
+        }
+        .test-form input {
+            padding: 10px 12px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .test-form button {
+            padding: 10px 16px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        .test-form button:hover {
+            background: #0069d9;
+        }
+        #player {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>欢迎访问Retr0的音乐API 👋</h1>
+    <p>这是一个音乐api接口，内置了网易云的VIP（因为我充了）<br>
+    不过只有通过www.retr0.xyz域名才能请求到VIP歌曲</p>
+
+    <!-- ====================== 新增：歌曲测试表单 ====================== -->
+    <div class="test-form">
+        <h3>🎵 在线测试（输入网易云歌曲ID）</h3>
+        <input type="text" id="songId" placeholder="例如：186016" value="186016">
+        <button onclick="loadSong()">播放测试</button>
+        <div id="player"></div>
+    </div>
+    <!-- ============================================================= -->
+
+    <h2>🛠️ 使用指南</h2>
+
+    <h3>API 接口</h3>
+    <p>基础路径: <span class="code-inline">https://meting.retr0.xyz/api</span></p>
+
+    <h3>请求参数</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>参数</th>
+                <th>必填</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="code-inline">server</span></td>
+                <td>是</td>
+                <td>平台: <span class="code-inline">netease</span> (网易云) / <span class="code-inline">tencent</span> (QQ) / <span class="code-inline">kugou</span> (酷狗) / <span class="code-inline">baidu</span> (百度) / <span class="code-inline">kuwo</span> (酷我)</td>
+            </tr>
+            <tr>
+                <td><span class="code-inline">type</span></td>
+                <td>是</td>
+                <td>类型: <span class="code-inline">search</span> / <span class="code-inline">song</span> / <span class="code-inline">album</span> / <span class="code-inline">artist</span> / <span class="code-inline">playlist</span> / <span class="code-inline">lrc</span> / <span class="code-inline">url</span> / <span class="code-inline">pic</span></td>
+            </tr>
+            <tr>
+                <td><span class="code-inline">id</span></td>
+                <td>是</td>
+                <td>资源 ID (如歌曲 ID、歌单 ID)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>示例</h3>
+    <ul>
+        <li>获取网易云歌曲详情: <span class="code-inline">https://meting.retr0.xyz/api?server=netease&type=song&id=186016</span></li>
+    </ul>
+
+    <h3>前端接入 (MetingJS)</h3>
+    <p>如果你使用 <a href="#">MetingJS</a>，只需设置 <span class="code-inline">meting_api</span> 即可:</p>
+
+    <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+        &lt;meting-js<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;server="netease"<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;type="playlist"<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;id="60198"<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;meting_api="https://meting.retr0.xyz/api?server=:server&type=:type&id=:id"&gt;<br>
+        &lt;/meting-js&gt;
+    </div>
+
+    <script>
+        function copyCode(btn) {
+            const code = btn.parentElement.textContent.replace(/复制/g, '').trim();
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = '已复制!';
+                setTimeout(() => btn.textContent = '复制', 2000);
+            });
+        }
+    </script>
+
+    <!-- ====================== 新增：APlayer + 加载歌曲逻辑 ====================== -->
+    <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+    <script>
+        let ap = null;
+
+        async function loadSong() {
+            const id = document.getElementById('songId').value.trim();
+            if (!id) return alert('请输入歌曲ID');
+
+            try {
+                // 调用你的API
+                const res = await fetch(`https://meting.retr0.xyz/api?server=netease&type=song&id=${id}`);
+                const data = await res.json();
+
+                if (!data.url) {
+                    alert('获取歌曲地址失败');
+                    return;
+                }
+
+                // 销毁旧播放器
+                if (ap) ap.destroy();
+
+                // 新建播放器
+                ap = new APlayer({
+                    element: document.getElementById('player'),
+                    audio: [{
+                        name: data.title || '未知歌曲',
+                        artist: data.author || '未知歌手',
+                        url: data.url,
+                        cover: data.pic || '',
+                        lrc: data.lrc || ''
+                    }]
+                });
+
+                ap.play();
+            } catch (e) {
+                alert('加载失败：' + e.message);
+            }
+        }
+
+        // 页面加载自动演示一次
+        window.onload = () => loadSong();
+    </script>
+</body>
+</html>
