@@ -1,233 +1,233 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retr0的音乐API</title>
-    <!-- APlayer CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        h1 {
-            font-size: 28px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-        h2 {
-            font-size: 22px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-        }
-        .code-inline {
-            background-color: #f5f5f5;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: Consolas, Monaco, monospace;
-            font-size: 0.9em;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-        }
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        table th {
-            background-color: #fafafa;
-            font-weight: bold;
-        }
-        .code-block {
-            background-color: #f5f5f5;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: Consolas, Monaco, monospace;
-            font-size: 0.9em;
-            overflow-x: auto;
-            margin: 15px 0;
-            position: relative;
-        }
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 4px 8px;
-            cursor: pointer;
-            font-size: 0.8em;
-        }
-        ul {
-            padding-left: 20px;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+  <meta charset="UTF-8">
+  <title>Meting API Serverless</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* 新增：测试表单样式 */
-        .test-form {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 1px solid #eee;
-        }
-        .test-form input {
-            padding: 10px 12px;
-            width: 300px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .test-form button {
-            padding: 10px 16px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-left: 8px;
-        }
-        .test-form button:hover {
-            background: #0069d9;
-        }
-        #player {
-            margin-top: 20px;
-        }
-    </style>
+  <!-- APlayer -->
+
+  <link rel="stylesheet" href="https://unpkg.com/aplayer/dist/APlayer.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f6f7;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0070f3, #00c6ff);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #0070f3;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #005bd1;
+    }
+
+    .example-buttons button {
+      margin-right: 10px;
+      margin-top: 10px;
+      background: #eee;
+      color: #333;
+    }
+
+    .api-url {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #666;
+      word-break: break-all;
+    }
+
+    #player {
+      margin-top: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #888;
+      font-size: 13px;
+    }
+
+    pre {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+  </style>
+
 </head>
+
 <body>
-    <h1>欢迎访问Retr0的音乐API 👋</h1>
-    <p>这是一个音乐api接口，内置了网易云的VIP（因为我充了）<br>
-    不过只有通过www.retr0.xyz域名才能请求到VIP歌曲</p>
 
-    <!-- ====================== 新增：歌曲测试表单 ====================== -->
-    <div class="test-form">
-        <h3>🎵 在线测试（输入网易云歌曲ID）</h3>
-        <input type="text" id="songId" placeholder="例如：186016" value="186016">
-        <button onclick="loadSong()">播放测试</button>
-        <div id="player"></div>
-    </div>
-    <!-- ============================================================= -->
+<header>
+  <h1>Meting API Serverless</h1>
+  <p>基于 Cloudflare Workers 的音乐 API 服务</p>
+</header>
 
-    <h2>🛠️ 使用指南</h2>
+<main>
 
-    <h3>API 接口</h3>
-    <p>基础路径: <span class="code-inline">https://meting.retr0.xyz/api</span></p>
+  <div class="card">
+    <h2>📖 API 使用说明</h2>
+    <p>基础调用格式：</p>
+    <pre>/api?server=netease&type=song&id=191232</pre>
 
-    <h3>请求参数</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>参数</th>
-                <th>必填</th>
-                <th>说明</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="code-inline">server</span></td>
-                <td>是</td>
-                <td>平台: <span class="code-inline">netease</span> (网易云) / <span class="code-inline">tencent</span> (QQ) / <span class="code-inline">kugou</span> (酷狗) / <span class="code-inline">baidu</span> (百度) / <span class="code-inline">kuwo</span> (酷我)</td>
-            </tr>
-            <tr>
-                <td><span class="code-inline">type</span></td>
-                <td>是</td>
-                <td>类型: <span class="code-inline">search</span> / <span class="code-inline">song</span> / <span class="code-inline">album</span> / <span class="code-inline">artist</span> / <span class="code-inline">playlist</span> / <span class="code-inline">lrc</span> / <span class="code-inline">url</span> / <span class="code-inline">pic</span></td>
-            </tr>
-            <tr>
-                <td><span class="code-inline">id</span></td>
-                <td>是</td>
-                <td>资源 ID (如歌曲 ID、歌单 ID)</td>
-            </tr>
-        </tbody>
-    </table>
+```
+<ul>
+  <li><b>server</b>：netease / tencent</li>
+  <li><b>type</b>：song / playlist / album</li>
+  <li><b>id</b>：资源 ID</li>
+</ul>
+```
 
-    <h3>示例</h3>
-    <ul>
-        <li>获取网易云歌曲详情: <span class="code-inline">https://meting.retr0.xyz/api?server=netease&type=song&id=186016</span></li>
-    </ul>
+  </div>
 
-    <h3>前端接入 (MetingJS)</h3>
-    <p>如果你使用 <a href="#">MetingJS</a>，只需设置 <span class="code-inline">meting_api</span> 即可:</p>
+  <div class="card">
+    <h2>🎧 在线测试</h2>
 
-    <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">复制</button>
-        &lt;meting-js<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;server="netease"<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;type="playlist"<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;id="60198"<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;meting_api="https://meting.retr0.xyz/api?server=:server&type=:type&id=:id"&gt;<br>
-        &lt;/meting-js&gt;
-    </div>
+```
+<label>平台：</label>
+<select id="server">
+  <option value="netease">网易云音乐</option>
+  <option value="tencent">QQ音乐</option>
+</select>
 
-    <script>
-        function copyCode(btn) {
-            const code = btn.parentElement.textContent.replace(/复制/g, '').trim();
-            navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = '已复制!';
-                setTimeout(() => btn.textContent = '复制', 2000);
-            });
-        }
-    </script>
+<label>类型：</label>
+<select id="type">
+  <option value="song">单曲</option>
+  <option value="playlist">歌单</option>
+</select>
 
-    <!-- ====================== 新增：APlayer + 加载歌曲逻辑 ====================== -->
-    <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-    <script>
-        let ap = null;
+<label>ID：</label>
+<input id="id" type="text" placeholder="例如：191232（单曲）或 3778678（歌单）">
 
-        async function loadSong() {
-            const id = document.getElementById('songId').value.trim();
-            if (!id) return alert('请输入歌曲ID');
+<button onclick="play()">▶ 播放</button>
 
-            try {
-                // 调用你的API
-                const res = await fetch(`https://meting.retr0.xyz/api?server=netease&type=song&id=${id}`);
-                const data = await res.json();
+<div class="example-buttons">
+  <button onclick="fillExample('netease','song','191232')">示例单曲</button>
+  <button onclick="fillExample('netease','playlist','3778678')">示例歌单</button>
+</div>
 
-                if (!data.url) {
-                    alert('获取歌曲地址失败');
-                    return;
-                }
+<div id="api-url" class="api-url"></div>
 
-                // 销毁旧播放器
-                if (ap) ap.destroy();
+<div id="player"></div>
+```
 
-                // 新建播放器
-                ap = new APlayer({
-                    element: document.getElementById('player'),
-                    audio: [{
-                        name: data.title || '未知歌曲',
-                        artist: data.author || '未知歌手',
-                        url: data.url,
-                        cover: data.pic || '',
-                        lrc: data.lrc || ''
-                    }]
-                });
+  </div>
 
-                ap.play();
-            } catch (e) {
-                alert('加载失败：' + e.message);
-            }
-        }
+</main>
 
-        // 页面加载自动演示一次
-        window.onload = () => loadSong();
-    </script>
+<footer>
+  Powered by Cloudflare Workers
+</footer>
+
+<!-- APlayer JS -->
+
+<script src="https://unpkg.com/aplayer/dist/APlayer.min.js"></script>
+
+<script>
+let ap = null;
+
+function fillExample(server, type, id) {
+  document.getElementById('server').value = server;
+  document.getElementById('type').value = type;
+  document.getElementById('id').value = id;
+}
+
+function play() {
+  const server = document.getElementById('server').value;
+  const type = document.getElementById('type').value;
+  const id = document.getElementById('id').value.trim();
+
+  if (!id) {
+    alert("请输入 ID");
+    return;
+  }
+
+  const api = `/api?server=${server}&type=${type}&id=${id}`;
+  document.getElementById("api-url").innerText = "请求地址：" + api;
+
+  fetch(api)
+    .then(res => {
+      if (!res.ok) throw new Error("HTTP 错误 " + res.status);
+      return res.json();
+    })
+    .then(data => {
+      if (!data || (Array.isArray(data) && data.length === 0)) {
+        alert("未获取到数据，请检查 ID 是否正确");
+        return;
+      }
+
+      if (ap) ap.destroy();
+
+      ap = new APlayer({
+        container: document.getElementById('player'),
+        audio: Array.isArray(data) ? data : [data]
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      alert("请求失败，请检查 API 或跨域设置");
+    });
+}
+</script>
+
 </body>
 </html>
