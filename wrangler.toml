@@ -27,6 +27,4 @@ head_sampling_rate = 1
 [assets]
 directory = "."
 binding = "ASSETS"
-
-[assets.run_worker_first]
-pattern = ["/api*"]
+run_worker_first = ["/api*"]
