@@ -7,23 +7,39 @@ const app = createApp()
 export default {
   async fetch (request, env, ctx) {
 
-    // ====== 🔐 来源校验开始 ======
-    const allowHost = env.METING_COOKIE_ALLOW_HOSTS || "www.retr0.xyz"
+// ====== 🔐 来源校验开始 ======
 
-    const origin = request.headers.get("origin") || ""
-    const referer = request.headers.get("referer") || ""
+const allowHosts = (env.METING_COOKIE_ALLOW_HOSTS || "www.retr0.xyz")
+  .split(",")
+  .map(h => h.trim())
 
-    const allowedOrigin = `https://${allowHost}`
+const origin = request.headers.get("origin") || ""
+const referer = request.headers.get("referer") || ""
 
-    const isAllowed =
-      origin.startsWith(allowedOrigin) ||
-      referer.startsWith(allowedOrigin)
-
-    // ❗ 拦截非法请求（无来源 / 非本站）
-    if (!isAllowed) {
+  // 判断是否命中允许列表
+  const isAllowed = allowHosts.some(host => {
+    const url = `https://${host}`
+    return origin.startsWith(url) || referer.startsWith(url)
+  })
+  
+  // 👇 判断是否是 API 请求（只限制 API，不限制资源）
+  const url = new URL(request.url)
+  const isApi = url.pathname.startsWith("/api")
+  
+  // ❗ 关键逻辑
+  if (isApi) {
+    // 有来源但不合法 → 拦
+    if ((origin || referer) && !isAllowed) {
       return new Response("Forbidden", { status: 403 })
     }
-    // ====== 🔐 来源校验结束 ======
+  
+    // 无来源（浏览器直接访问）→ 也拦
+    if (!origin && !referer) {
+      return new Response("Forbidden", { status: 403 })
+    }
+  }
+  
+  // ====== 🔐 来源校验结束 ======
 
     const normalizedRequest = stripPrefix(request, env)
     return app.fetch(normalizedRequest, env, ctx)
