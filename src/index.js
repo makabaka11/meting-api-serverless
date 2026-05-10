@@ -25,14 +25,18 @@ export default {
   // 👇 判断是否是 API 请求（只限制 API，不限制资源）
   const url = new URL(request.url)
   const isApi = url.pathname.startsWith("/api")
-  
+
+  // 👇 token 校验：请求携带正确的 token 则直接放行
+  const apiToken = env.METING_API_TOKEN || "OrndL30xCWLEv49QI3vW"
+  const tokenValid = isApi && url.searchParams.get("token") === apiToken
+
   // ❗ 关键逻辑
-  if (isApi) {
+  if (isApi && !tokenValid) {
     // 有来源但不合法 → 拦
     if ((origin || referer) && !isAllowed) {
       return new Response("Forbidden", { status: 403 })
     }
-  
+
     // 无来源（浏览器直接访问）→ 也拦
     if (!origin && !referer) {
       return new Response("Forbidden", { status: 403 })
