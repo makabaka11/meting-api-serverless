@@ -9,7 +9,7 @@ export default {
 
     // ====== 🔐 来源校验开始 ======
   
-  const allowHosts = (env.METING_COOKIE_ALLOW_HOSTS || "www.retr0.xyz")
+  const allowHosts = (env.METING_COOKIE_ALLOW_HOSTS || "www.retr0.xyz,222.94.238.52")
     .split(",")
     .map(h => h.trim())
   
